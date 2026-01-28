@@ -69,10 +69,10 @@ function BookDetails() {
               : (book.description?.value || "Pas de description disponible sur Open Library.")}
           </p>
 
-          {/* Section WIKIPEDIA (Validation des 2pts) */}
+          {/* Section WIKIPEDIA  */}
           {wikiData && (
             <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#252525', borderRadius: '10px', borderLeft: '5px solid #4facfe' }}>
-              <h3 style={{ marginTop: 0 }}>📚 Complément Wikipedia</h3>
+              <h3 style={{ marginTop: 0 }}> Infos Wikipedia</h3>
               <p style={{ fontSize: '0.95rem', lineHeight: '1.5' }}>{wikiData.extract}</p>
               <a 
                 href={wikiData.content_urls?.desktop?.page} 
