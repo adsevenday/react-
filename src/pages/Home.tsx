@@ -42,10 +42,6 @@ function Home() {
     }
   };
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await performSearch(searchForm);
-  };
 
   const handleNavSearch = async (query: string) => {
     const newForm = { title: query, author: '', subject: '' };
@@ -55,11 +51,6 @@ function Home() {
     }
   };
 
-  const resetSearch = () => {
-    setHasSearched(false);
-    setSearchResults([]);
-    setSearchForm({ title: '', author: '', subject: '' });
-  };
 
   return (
     <>

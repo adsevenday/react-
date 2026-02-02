@@ -15,6 +15,7 @@ const NavHeader: React.FC<NavHeaderProps> = ({ logo, onSearch }) => {
   return (
     <nav className="navheader">
       <Logo {...logo} />
+      <a href="/advanced" className="advancedSearchLink">Recherche avancée</a>
       <SearchBar 
         value={searchQuery}
         onChange={setSearchQuery}

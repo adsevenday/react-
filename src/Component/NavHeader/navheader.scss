@@ -29,4 +29,15 @@
       height: 40px;
     }
   }
+
+  .advancedSearchLink {
+    color: $color-pink-cherry;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $color-pink-petal;
+    }
+  }
 }
