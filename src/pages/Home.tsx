@@ -64,10 +64,10 @@ function Home() {
       </div>
 
       <Footer 
-        number="+33 1 23 45 67 89" 
-        adress="123 Rue de la Littérature, Paris" 
-        logoInsta="https://instagram.com" 
-        LogoX="https://x.com" 
+        number="0895 234 069"
+        adress="40 Rue du Dr Roux, 75015 Paris"
+        logoInsta="https://www.instagram.com/supinfo/"
+        LogoX="https://www.youtube.com/watch?v=bbZ837Wjj1k&list=RDbbZ837Wjj1k&start_radio=1"
       />
     </>
   );
