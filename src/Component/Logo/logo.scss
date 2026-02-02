@@ -1,0 +1,27 @@
+@import '../../styles/token.scss';
+
+.logo {
+  display: inline-block;
+  height: 50px;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 2px 4px rgba(251, 111, 146, 0.2));
+
+  img {
+    height: 100%;
+    width: auto;
+    display: block;
+  }
+
+  &:hover {
+    transform: scale(1.08);
+    filter: drop-shadow(0 4px 8px rgba(251, 111, 146, 0.4));
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 768px) {
+    height: 40px;
+  }
+}

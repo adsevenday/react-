@@ -1,4 +1,5 @@
 import type { SearchBarProps } from "./SearchBarProps";
+import './searchbar.scss';
 
 const SearchBar: React.FC<SearchBarProps> = ({ value, placeholder, onChange, onSearch }) => {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

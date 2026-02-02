@@ -1,5 +1,5 @@
 import type { FooterProps } from "./FooterProps";
-
+import './footer.scss';
 
 const Footer: React.FC<FooterProps> = (props) => {
     return (<footer>

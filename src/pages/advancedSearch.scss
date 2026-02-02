@@ -1,0 +1,131 @@
+@import '../styles/token.scss';
+
+.advancedSearch {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+  min-height: 100vh;
+
+  .backLink {
+    display: inline-block;
+    color: $color-pink-petal;
+    text-decoration: none;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+      transform: translateX(-4px);
+      color: $color-pink-candy;
+    }
+  }
+
+  .title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 2.5rem;
+    color: $color-pink-petal;
+    text-shadow: 0 2px 8px rgba(251, 111, 146, 0.2);
+  }
+
+  .searchForm {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    background: linear-gradient(135deg, rgba(255, 229, 236, 0.05) 0%, rgba(255, 194, 209, 0.05) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 2px solid $color-pink-cherry;
+    max-width: 600px;
+
+    .searchInput {
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      border: 2px solid $color-pink-pastel;
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+      font-size: 0.95rem;
+      transition: all 0.3s ease;
+      outline: none;
+
+      &::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      &:focus {
+        background-color: rgba(255, 255, 255, 0.12);
+        border-color: $color-pink-cherry;
+        box-shadow: 0 0 12px rgba(251, 111, 146, 0.2);
+      }
+
+      &:hover {
+        border-color: $color-pink-cherry;
+      }
+    }
+
+    .searchButton {
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, $color-pink-petal 0%, $color-pink-candy 100%);
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+
+      &:hover:not(:disabled) {
+        background: linear-gradient(135deg, $color-pink-candy 0%, $color-pink-petal 100%);
+        box-shadow: 0 6px 20px rgba(251, 111, 146, 0.4);
+        transform: translateY(-2px);
+      }
+
+      &:active:not(:disabled) {
+        transform: translateY(0);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .resultsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    a {
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-8px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+  }
+
+  .noResults {
+    text-align: center;
+    color: #999;
+    font-size: 1.1rem;
+    margin-top: 3rem;
+  }
+}

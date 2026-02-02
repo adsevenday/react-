@@ -2,6 +2,7 @@ import type { NavHeaderProps } from './NavHearder';
 import { useState } from 'react';
 import Logo from '../Logo/Logo.tsx';
 import SearchBar from '../SearchBar/SearchBar.tsx';
+import './navheader.scss';
 
 const NavHeader: React.FC<NavHeaderProps> = ({ logo, onSearch }) => {
   const [searchQuery, setSearchQuery] = useState("");

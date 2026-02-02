@@ -1,4 +1,5 @@
 import type { WikiCardProps } from "./WikiCardProps";
+import './wikicard.scss';
 
 const WikiCard: React.FC<WikiCardProps> = (props) => {
     return (

@@ -1,5 +1,5 @@
 import type { CardProps } from "./CardProps";
-
+import "card.scss";
 const Card: React.FC<CardProps> = (props) => {
     return (
         <div className="card">

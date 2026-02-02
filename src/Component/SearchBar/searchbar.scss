@@ -1,0 +1,67 @@
+@import '../../styles/token.scss';
+
+.searchbar {
+  display: flex;
+  gap: 0.5rem;
+  flex: 1;
+  max-width: 400px;
+
+  input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid $color-pink-pastel;
+    border-radius: 8px;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    outline: none;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    &:focus {
+      background-color: rgba(255, 255, 255, 0.15);
+      border-color: $color-pink-cherry;
+      box-shadow: 0 0 8px rgba(251, 111, 146, 0.3);
+    }
+
+    &:hover {
+      border-color: $color-pink-cherry;
+    }
+  }
+
+  button {
+    padding: 0.75rem 1.5rem;
+    background-color: $color-pink-petal;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+
+    &:hover {
+      background-color: $color-pink-candy;
+      box-shadow: 0 4px 12px rgba(255, 141, 166, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      background-color: $color-pink-petal;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+    width: 100%;
+
+    button {
+      padding: 0.75rem 1rem;
+    }
+  }
+}

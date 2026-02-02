@@ -1,0 +1,32 @@
+@import '../../styles/token.scss';
+
+.navheader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2rem;
+  background: linear-gradient(90deg, rgba(255, 229, 236, 0.1) 0%, rgba(255, 194, 209, 0.1) 100%);
+  border-bottom: 2px solid $color-pink-cherry;
+  gap: 2rem;
+  flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(251, 111, 146, 0.1);
+
+  img {
+    height: 50px;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+
+    img {
+      height: 40px;
+    }
+  }
+}

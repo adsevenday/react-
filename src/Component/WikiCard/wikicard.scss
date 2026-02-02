@@ -1,0 +1,62 @@
+@import '../../styles/token.scss';
+
+.wiki-card {
+  background: linear-gradient(135deg, $color-pink-soft 0%, $color-pink-pastel 100%);
+  border: 2px solid $color-pink-candy;
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 4px 12px rgba(255, 141, 166, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  max-width: 280px;
+  overflow: hidden;
+
+  &:hover {
+    background: linear-gradient(135deg, $color-pink-pastel 0%, $color-pink-cherry 100%);
+    box-shadow: 0 8px 24px rgba(251, 111, 146, 0.3);
+    transform: translateY(-4px);
+  }
+
+  img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
+  p {
+    color: #ffffff;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0 0 1rem 0;
+    opacity: 0.9;
+  }
+
+  a {
+    display: inline-block;
+    background-color: $color-pink-petal;
+    color: white;
+    text-decoration: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $color-pink-candy;
+      box-shadow: 0 4px 12px rgba(255, 141, 166, 0.4);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      background-color: $color-pink-petal;
+      transform: translateY(0);
+    }
+  }
+}

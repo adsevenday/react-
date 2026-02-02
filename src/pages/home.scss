@@ -1,0 +1,74 @@
+@import '../styles/token.scss';
+
+.homeContainer {
+  padding: 3rem 2rem;
+  width: 100%;
+  min-height: 60vh;
+  box-sizing: border-box;
+  color: white;
+  background-color: #121212;
+
+  .section {
+    margin-bottom: 4rem;
+    padding: 0 2rem;
+
+    .sectionHeader {
+      display: flex;
+      align-items: center;
+      margin-bottom: 3rem;
+      gap: 1.5rem;
+
+      .headerBar {
+        width: 12px;
+        height: 60px;
+        background: linear-gradient(180deg, $color-pink-petal 0%, $color-pink-candy 100%);
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(251, 111, 146, 0.3);
+      }
+
+      .sectionTitle {
+        font-size: 2.8rem;
+        margin: 0;
+        font-weight: 800;
+        color: white;
+        text-shadow: 0 2px 8px rgba(251, 111, 146, 0.1);
+
+        @media (max-width: 768px) {
+          font-size: 1.8rem;
+        }
+      }
+    }
+
+    .booksGrid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2.5rem;
+      width: 100%;
+
+      a {
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+
+        &:hover {
+          transform: translateY(-12px);
+        }
+      }
+
+      @media (max-width: 1440px) {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 2rem;
+      }
+
+      @media (max-width: 1024px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+    }
+  }
+}

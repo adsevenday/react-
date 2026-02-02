@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { OpenLibraryService } from '../api/openLibrary';
+import NavHeader from '../Component/NavHeader/NavHeader';
+import Footer from '../Component/Footer/Footer';
+import WikiCard from '../Component/WikiCard/WikiCard';
+import './bookDetails.scss';
 
 function BookDetails() {
   const { id } = useParams();
@@ -29,98 +33,79 @@ function BookDetails() {
     fetchAllData();
   }, [id]);
 
-  if (loading) return <div style={{ padding: '100px', textAlign: 'center', color: 'white', fontSize: '1.5rem' }}>Chargement...</div>;
-  if (!book) return <div style={{ padding: '100px', textAlign: 'center', color: 'white' }}>Livre non trouvé.</div>;
+  const handleSearch = (query: string) => {
+    console.log("Recherche:", query);
+  };
 
   return (
-    <div style={{ 
-      padding: '40px', 
-      width: '100%', 
-      minHeight: '100vh',
-      boxSizing: 'border-box', 
-      color: 'white', 
-      backgroundColor: '#121212',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center' // Centre tout le contenu verticalement
-    }}>
-      {/* Conteneur pour le bouton retour aligné à gauche du bloc central */}
-      <div style={{ width: '100%', maxWidth: '1200px', marginBottom: '20px' }}>
-        <Link to="/" style={{ color: '#4facfe', textDecoration: 'none', fontSize: '1.2rem', fontWeight: 'bold' }}>
-          ← Retour à la librairie
-        </Link>
-      </div>
+    <>
+      <NavHeader 
+        logo={{ imageSrc: '/logo.png', alt: 'Logo' }} 
+        onSearch={handleSearch} 
+      />
       
-      {/* Bloc principal centré */}
-      <div style={{ 
-        display: 'flex', 
-        gap: '60px', 
-        width: '100%',
-        maxWidth: '1200px', // Limite la largeur pour garder le contenu centré et lisible
-        flexWrap: 'wrap', 
-        justifyContent: 'center', // Centre les colonnes image et texte
-        alignItems: 'flex-start'
-      }}>
+      <div className="bookDetailsContainer">
+        {loading && <div className="loadingContainer">Chargement...</div>}
         
-        {/* Colonne Couverture */}
-        <div style={{ flex: '1', minWidth: '400px', maxWidth: '500px' }}>
-          {book.covers ? (
-            <img 
-              src={`https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`} 
-              alt={book.title} 
-              style={{ width: '100%', borderRadius: '20px', boxShadow: '0 20px 50px rgba(0,0,0,0.7)' }}
-            />
-          ) : (
-            <div style={{ height: '600px', background: '#333', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              Aucune image
+        {!loading && !book && <div className="errorContainer">Livre non trouvé.</div>}
+
+        {!loading && book && (
+          <>
+            <Link to="/" className="backLink">← Retour à la librairie</Link>
+            
+            <div className="bookDetailsContent">
+              
+              {/* Colonne Couverture */}
+              <div className="bookCoverColumn">
+                {book.covers ? (
+                  <img 
+                    src={`https://covers.openlibrary.org/b/id/${book.covers[0]}-L.jpg`} 
+                    alt={book.title} 
+                    className="bookCover"
+                  />
+                ) : (
+                  <div className="noCoverImage">Aucune image</div>
+                )}
+              </div>
+
+              {/* Colonne Informations */}
+              <div className="bookInfoColumn">
+                <h1 className="bookTitle">{book.title}</h1>
+                
+                <div className="refBadge">
+                  Réf : {id}
+                </div>
+
+                <h3 className="sectionTitle">Description</h3>
+                <p className="bookDescription">
+                  {typeof book.description === 'string' 
+                    ? book.description 
+                    : (book.description?.value || "Pas de description disponible.")}
+                </p>
+
+                {/* Section Wikipedia avec WikiCard */}
+                {wikiData && (
+                  <div className="wikiSection">
+                    <WikiCard 
+                      bookCover={wikiData.thumbnail?.source}
+                      description={wikiData.extract}
+                      link={wikiData.content_urls?.desktop?.page}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-
-        {/* Colonne Informations */}
-        <div style={{ flex: '1.2', minWidth: '400px', textAlign: 'left' }}>
-          <h1 style={{ fontSize: '3.5rem', marginBottom: '10px', lineHeight: '1.1' }}>{book.title}</h1>
-          
-          <div style={{ marginBottom: '30px' }}>
-            <span style={{ background: '#4facfe', padding: '8px 15px', borderRadius: '6px', fontSize: '1rem', fontWeight: 'bold' }}>
-              Réf : {id}
-            </span>
-          </div>
-
-          <h3 style={{ fontSize: '1.8rem', color: '#4facfe', borderBottom: '2px solid #333', paddingBottom: '10px' }}>
-            Description
-          </h3>
-          <p style={{ fontSize: '1.2rem', lineHeight: '1.7', color: '#ddd', marginTop: '20px' }}>
-            {/* Gestion sécurisée de la description */}
-            {typeof book.description === 'string' 
-              ? book.description 
-              : (book.description?.value || "Pas de description disponible.")}
-          </p>
-
-          {/* Section Wikipedia */}
-          {wikiData && (
-            <div style={{ 
-              marginTop: '50px', 
-              padding: '30px', 
-              backgroundColor: '#1a1a1a', 
-              borderRadius: '15px', 
-              borderLeft: '8px solid #4facfe' 
-            }}>
-              <h3 style={{ marginTop: 0, fontSize: '1.5rem' }}>Zoom Wikipedia</h3>
-              <p style={{ fontSize: '1.1rem', lineHeight: '1.6', color: '#ccc' }}>{wikiData.extract}</p>
-              <a 
-                href={wikiData.content_urls?.desktop?.page} 
-                target="_blank" 
-                rel="noreferrer"
-                style={{ color: '#4facfe', fontWeight: 'bold', fontSize: '1.1rem' }}
-              >
-                Lire la suite sur Wikipedia →
-              </a>
-            </div>
-          )}
-        </div>
+          </>
+        )}
       </div>
-    </div>
+
+      <Footer 
+        number="+33 1 23 45 67 89" 
+        adress="123 Rue de la Littérature, Paris" 
+        logoInsta="https://instagram.com" 
+        LogoX="https://x.com" 
+      />
+    </>
   );
 }
 

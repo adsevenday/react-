@@ -1,0 +1,51 @@
+@import '../../styles/token.scss';
+
+footer {
+  background: linear-gradient(180deg, rgba(255, 229, 236, 0.05) 0%, rgba(251, 111, 146, 0.08) 100%);
+  border-top: 2px solid $color-pink-cherry;
+  padding: 2rem;
+  margin-top: 4rem;
+  text-align: center;
+  box-shadow: 0 -2px 8px rgba(251, 111, 146, 0.1);
+
+  p {
+    color: #ffffff;
+    font-size: 0.95rem;
+    margin: 0.75rem 0;
+    opacity: 0.85;
+  }
+
+  a {
+    display: inline-block;
+    color: $color-pink-petal;
+    text-decoration: none;
+    margin: 0.5rem 1rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+
+    &:hover {
+      color: white;
+      background-color: $color-pink-petal;
+      box-shadow: 0 4px 12px rgba(251, 111, 146, 0.3);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      background-color: $color-pink-candy;
+      transform: translateY(0);
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1.5rem;
+    margin-top: 2rem;
+
+    a {
+      display: block;
+      margin: 0.5rem auto;
+    }
+  }
+}
