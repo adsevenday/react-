@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+// @ts-ignore
 import { OpenLibraryService } from '../api/openLibrary';
 import NavHeader from '../Component/NavHeader/NavHeader';
 import Footer from '../Component/Footer/Footer';
@@ -8,7 +9,10 @@ import './home.scss';
 
 function Home() {
   const [trendingBooks, setTrendingBooks] = useState<any[]>([]);
-  const navigate = useNavigate();
+  const [searchForm, setSearchForm] = useState({ title: '', author: '', subject: '' });
+  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false);
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -22,10 +26,39 @@ function Home() {
     fetchHomeData();
   }, []);
 
-  const handleSearch = (query: string) => {
-    if (query.trim()) {
-      navigate(`/advanced?title=${encodeURIComponent(query)}`);
+  const performSearch = async (form: typeof searchForm) => {
+    setLoading(true);
+    try {
+      const activeFilters = Object.fromEntries(
+        Object.entries(form).filter(([_, v]) => v !== '')
+      );
+      const data = await OpenLibraryService.advancedSearch(activeFilters);
+      setSearchResults(data.docs || []);
+      setHasSearched(true);
+    } catch (error) {
+      console.error("Erreur recherche:", error);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await performSearch(searchForm);
+  };
+
+  const handleNavSearch = async (query: string) => {
+    const newForm = { title: query, author: '', subject: '' };
+    setSearchForm(newForm);
+    if (query.trim()) {
+      await performSearch(newForm);
+    }
+  };
+
+  const resetSearch = () => {
+    setHasSearched(false);
+    setSearchResults([]);
+    setSearchForm({ title: '', author: '', subject: '' });
   };
 
   return (
@@ -33,33 +66,83 @@ function Home() {
       <NavHeader 
         logo={{
           href: '/', 
-          imageSrc: '../assets/logo_chat.png',
+          imageSrc: '/logo_chat.png',
           alt: 'Logo Joséphine Librairie'
         }}
-        onSearch={handleSearch}
+        onSearch={handleNavSearch}
       />
 
       <div className="homeContainer">
+        {/* Formulaire de recherche avancée */}
+        <section className="searchSection">
+          <h1 className="mainTitle">Bienvenue à la Librairie Joséphine</h1>
+          <form onSubmit={handleSearch} className="searchForm">
+            <input 
+              placeholder="Titre du livre" 
+              value={searchForm.title}
+              onChange={e => setSearchForm({...searchForm, title: e.target.value})} 
+              className="searchInput"
+            />
+            <input 
+              placeholder="Auteur" 
+              value={searchForm.author}
+              onChange={e => setSearchForm({...searchForm, author: e.target.value})} 
+              className="searchInput"
+            />
+            <input 
+              placeholder="Sujet (ex: Fantasy)" 
+              value={searchForm.subject}
+              onChange={e => setSearchForm({...searchForm, subject: e.target.value})} 
+              className="searchInput"
+            />
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="searchButton"
+            >
+              {loading ? 'Recherche...' : 'Rechercher'}
+            </button>
+            {hasSearched && (
+              <button 
+                type="button" 
+                onClick={resetSearch}
+                className="resetButton"
+              >
+                Réinitialiser
+              </button>
+            )}
+          </form>
+        </section>
+
+        {/* Section des résultats ou nouveaux arrivants */}
         <section className="section">
           <div className="sectionHeader">
             <div className="headerBar"></div>
-            <h2 className="sectionTitle">Les nouveaux arrivants</h2>
+            <h2 className="sectionTitle">
+              {hasSearched ? 'Résultats de recherche' : 'Les nouveaux arrivants'}
+            </h2>
           </div>
 
           <div className="booksGrid">
-            {trendingBooks.map((book, index) => {
+            {(hasSearched ? searchResults : trendingBooks).map((book, index) => {
               const bookId = book.key.split('/').pop();
               return (
                 <Link to={`/book/${bookId}`} key={index} style={{ textDecoration: 'none' }}>
                   <Card
                     name={book.title}
                     author={book.author_name ? book.author_name[0] : 'Auteur inconnu'}
-                    bookCover={book.cover_id ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg` : undefined}
+                    bookCover={book.cover_id ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg` : 
+                              book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : undefined}
+                    period={book.first_publish_year ? `${book.first_publish_year}` : undefined}
                   />
                 </Link>
               );
             })}
           </div>
+
+          {hasSearched && !loading && searchResults.length === 0 && (
+            <p className="noResults">Aucun livre trouvé pour cette recherche.</p>
+          )}
         </section>
       </div>
 

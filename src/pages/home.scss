@@ -8,6 +8,108 @@
   color: white;
   background-color: #121212;
 
+  .searchSection {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding: 0 2rem;
+
+    .mainTitle {
+      font-size: 3.5rem;
+      margin-bottom: 2.5rem;
+      color: $color-pink-petal;
+      text-shadow: 0 2px 8px rgba(251, 111, 146, 0.2);
+      font-weight: 800;
+
+      @media (max-width: 768px) {
+        font-size: 2.2rem;
+      }
+    }
+
+    .searchForm {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+      background: linear-gradient(135deg, rgba(255, 229, 236, 0.05) 0%, rgba(255, 194, 209, 0.05) 100%);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 2px solid $color-pink-cherry;
+      max-width: 800px;
+      margin: 0 auto;
+
+      .searchInput {
+        flex: 1;
+        min-width: 200px;
+        padding: 0.875rem 1rem;
+        border-radius: 8px;
+        border: 2px solid $color-pink-pastel;
+        background-color: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        outline: none;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.5);
+        }
+
+        &:focus {
+          background-color: rgba(255, 255, 255, 0.12);
+          border-color: $color-pink-cherry;
+          box-shadow: 0 0 12px rgba(251, 111, 146, 0.2);
+        }
+
+        &:hover {
+          border-color: $color-pink-cherry;
+        }
+      }
+
+      .searchButton, .resetButton {
+        padding: 0.875rem 1.5rem;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &:hover:not(:disabled) {
+          box-shadow: 0 6px 20px rgba(251, 111, 146, 0.4);
+          transform: translateY(-2px);
+        }
+
+        &:active:not(:disabled) {
+          transform: translateY(0);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      .searchButton {
+        background: linear-gradient(135deg, $color-pink-petal 0%, $color-pink-candy 100%);
+
+        &:hover:not(:disabled) {
+          background: linear-gradient(135deg, $color-pink-candy 0%, $color-pink-petal 100%);
+        }
+      }
+
+      .resetButton {
+        background: linear-gradient(135deg, $color-pink-cherry 0%, $color-pink-pastel 100%);
+
+        &:hover:not(:disabled) {
+          background: linear-gradient(135deg, $color-pink-pastel 0%, $color-pink-cherry 100%);
+        }
+      }
+    }
+  }
+
   .section {
     margin-bottom: 4rem;
     padding: 0 2rem;
@@ -70,5 +172,13 @@
         gap: 1rem;
       }
     }
+  }
+
+  .noResults {
+    text-align: center;
+    color: $color-pink-pastel;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+    font-style: italic;
   }
 }

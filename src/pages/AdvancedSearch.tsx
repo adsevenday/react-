@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
+// @ts-ignore
 import { OpenLibraryService } from '../api/openLibrary';
 import { Link } from 'react-router-dom';
 import Card from '../Component/Card/Card';
@@ -54,7 +55,7 @@ function AdvancedSearch() {
       <NavHeader 
         logo={{
           href: '/',
-          imageSrc: '../assets/logo_chat.png',
+          imageSrc: '/logo_chat.png',
           alt: 'Logo'
         }}
         onSearch={handleSearch2}

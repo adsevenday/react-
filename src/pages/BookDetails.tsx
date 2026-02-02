@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+// @ts-ignore
 import { OpenLibraryService } from '../api/openLibrary';
 import NavHeader from '../Component/NavHeader/NavHeader';
 import Footer from '../Component/Footer/Footer';
@@ -43,7 +44,7 @@ function BookDetails() {
   return (
     <>
       <NavHeader 
-        logo={{ imageSrc: '/logo.png', alt: 'Logo' }} 
+        logo={{ imageSrc: '/logo_chat.png', alt: 'Logo', href: '/' }} 
         onSearch={handleSearch} 
       />
       
