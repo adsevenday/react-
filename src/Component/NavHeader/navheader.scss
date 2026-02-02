@@ -1,4 +1,4 @@
-@import '../../styles/token.scss';
+@use '../../styles/token.scss' as *;
 
 .navheader {
   display: flex;

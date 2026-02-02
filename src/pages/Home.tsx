@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { OpenLibraryService } from '../api/openLibrary';
 import NavHeader from '../Component/NavHeader/NavHeader';
 import Footer from '../Component/Footer/Footer';
@@ -8,6 +8,7 @@ import './home.scss';
 
 function Home() {
   const [trendingBooks, setTrendingBooks] = useState<any[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchHomeData = async () => {
@@ -22,7 +23,9 @@ function Home() {
   }, []);
 
   const handleSearch = (query: string) => {
-    console.log("Recherche:", query);
+    if (query.trim()) {
+      navigate(`/advanced?title=${encodeURIComponent(query)}`);
+    }
   };
 
   return (

@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { OpenLibraryService } from '../api/openLibrary';
 import { Link } from 'react-router-dom';
 import Card from '../Component/Card/Card';
@@ -7,17 +8,24 @@ import Footer from '../Component/Footer/Footer';
 import './advancedSearch.scss';
 
 function AdvancedSearch() {
+  const [searchParams] = useSearchParams();
   const [form, setForm] = useState({ title: '', author: '', subject: '' });
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const handleSearch = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    const title = searchParams.get('title');
+    if (title) {
+      setForm({ title, author: '', subject: '' });
+      performSearch({ title, author: '', subject: '' });
+    }
+  }, [searchParams]);
+
+  const performSearch = async (searchForm: typeof form) => {
     setLoading(true);
     try {
-      // On retire les champs vides pour ne pas polluer l'API
       const activeFilters = Object.fromEntries(
-        Object.entries(form).filter(([_, v]) => v !== '')
+        Object.entries(searchForm).filter(([_, v]) => v !== '')
       );
       const data = await OpenLibraryService.advancedSearch(activeFilters);
       setResults(data.docs || []);
@@ -28,8 +36,17 @@ function AdvancedSearch() {
     }
   };
 
-  const handleSearch2 = (query: string) => {
-    setForm({...form, title: query});
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await performSearch(form);
+  };
+
+  const handleSearch2 = async (query: string) => {
+    const newForm = { ...form, title: query };
+    setForm(newForm);
+    if (query.trim()) {
+      await performSearch(newForm);
+    }
   };
 
   return (

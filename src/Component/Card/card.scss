@@ -1,4 +1,4 @@
-@import '../../styles/token.scss';
+@use '../../styles/token.scss' as *;
 
 .card {
   background: linear-gradient(135deg, $color-pink-soft 0%, $color-pink-pastel 100%);

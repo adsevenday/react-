@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { OpenLibraryService } from '../api/openLibrary';
 import NavHeader from '../Component/NavHeader/NavHeader';
 import Footer from '../Component/Footer/Footer';
@@ -8,6 +8,7 @@ import './bookDetails.scss';
 
 function BookDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [book, setBook] = useState<any>(null);
   const [wikiData, setWikiData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +35,9 @@ function BookDetails() {
   }, [id]);
 
   const handleSearch = (query: string) => {
-    console.log("Recherche:", query);
+    if (query.trim()) {
+      navigate(`/advanced?title=${encodeURIComponent(query)}`);
+    }
   };
 
   return (
