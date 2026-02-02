@@ -73,46 +73,6 @@ function Home() {
       />
 
       <div className="homeContainer">
-        {/* Formulaire de recherche avancée */}
-        <section className="searchSection">
-          <h1 className="mainTitle">Bienvenue à la Librairie Joséphine</h1>
-          <form onSubmit={handleSearch} className="searchForm">
-            <input 
-              placeholder="Titre du livre" 
-              value={searchForm.title}
-              onChange={e => setSearchForm({...searchForm, title: e.target.value})} 
-              className="searchInput"
-            />
-            <input 
-              placeholder="Auteur" 
-              value={searchForm.author}
-              onChange={e => setSearchForm({...searchForm, author: e.target.value})} 
-              className="searchInput"
-            />
-            <input 
-              placeholder="Sujet (ex: Fantasy)" 
-              value={searchForm.subject}
-              onChange={e => setSearchForm({...searchForm, subject: e.target.value})} 
-              className="searchInput"
-            />
-            <button 
-              type="submit" 
-              disabled={loading}
-              className="searchButton"
-            >
-              {loading ? 'Recherche...' : 'Rechercher'}
-            </button>
-            {hasSearched && (
-              <button 
-                type="button" 
-                onClick={resetSearch}
-                className="resetButton"
-              >
-                Réinitialiser
-              </button>
-            )}
-          </form>
-        </section>
 
         {/* Section des résultats ou nouveaux arrivants */}
         <section className="section">
@@ -147,10 +107,10 @@ function Home() {
       </div>
 
       <Footer 
-        number="+33 1 23 45 67 89" 
-        adress="123 Rue de la Littérature, Paris" 
-        logoInsta="https://instagram.com" 
-        LogoX="https://x.com" 
+        number="0895 234 069"
+        adress="40 Rue du Dr Roux, 75015 Paris"
+        logoInsta="https://www.instagram.com/supinfo/"
+        LogoX="https://www.youtube.com/watch?v=bbZ837Wjj1k&list=RDbbZ837Wjj1k&start_radio=1"
       />
     </>
   );

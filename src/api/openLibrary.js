@@ -37,5 +37,21 @@ export const OpenLibraryService = {
     const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${formattedTitle}`);
     if (!response.ok) return null; 
     return await response.json();
-  }
+  },
+
+  // Récupération de l'année de publication via les éditions
+  getPublishYear: async (workId) => {
+    try {
+      const response = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=1`);
+      if (!response.ok) return null;
+      const data = await response.json();
+      if (data.entries && data.entries.length > 0) {
+        return data.entries[0].publish_date ? new Date(data.entries[0].publish_date).getFullYear() : null;
+      }
+      return null;
+    } catch (error) {
+      console.error("Erreur récupération année:", error);
+      return null;
+    }
+  },
 };

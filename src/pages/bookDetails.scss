@@ -126,6 +126,26 @@
       box-shadow: 0 4px 12px rgba(251, 111, 146, 0.3);
     }
 
+    .bookMeta {
+      margin: 1.5rem 0;
+      padding: 1rem;
+      background: rgba(251, 111, 146, 0.08);
+      border-radius: 8px;
+      border-left: 4px solid $color-pink-petal;
+
+      .metaItem {
+        margin: 0.5rem 0;
+        font-size: 1rem;
+        color: #ddd;
+        line-height: 1.6;
+
+        strong {
+          color: $color-pink-petal;
+          font-weight: 600;
+        }
+      }
+    }
+
     .sectionTitle {
       font-size: 1.8rem;
       color: $color-pink-petal;

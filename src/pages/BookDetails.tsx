@@ -12,6 +12,7 @@ function BookDetails() {
   const navigate = useNavigate();
   const [book, setBook] = useState<any>(null);
   const [wikiData, setWikiData] = useState<any>(null);
+  const [publishYear, setPublishYear] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -20,6 +21,11 @@ function BookDetails() {
       try {
         const bookData = await OpenLibraryService.getBookDetails(id);
         setBook(bookData);
+        console.log("Détails du livre :", bookData);
+
+        // Récupérer l'année de publication
+        const year = await OpenLibraryService.getPublishYear(id);
+        setPublishYear(year);
 
         if (bookData.title) {
           const wiki = await OpenLibraryService.getWikipediaSummary(bookData.title);
@@ -80,6 +86,22 @@ function BookDetails() {
                   Réf : {id}
                 </div>
 
+                {book.authors && book.authors.length > 0 && (
+                  <div className="bookMeta">
+                    <p className="metaItem">
+                      <strong>Auteur(s) :</strong> {book.authors.map((a: any) => a.name).join(", ")}
+                    </p>
+                  </div>
+                )}
+
+                {book.subjects && book.subjects.length > 0 && (
+                  <div className="bookMeta">
+                    <p className="metaItem">
+                      <strong>Sujet(s) :</strong> {book.subjects.slice(0, 5).join(", ")}
+                    </p>
+                  </div>
+                )}
+
                 <h3 className="sectionTitle">Description</h3>
                 <p className="bookDescription">
                   {typeof book.description === 'string' 
@@ -103,11 +125,11 @@ function BookDetails() {
         )}
       </div>
 
-      <Footer 
-        number="+33 1 23 45 67 89" 
-        adress="123 Rue de la Littérature, Paris" 
-        logoInsta="https://instagram.com" 
-        LogoX="https://x.com" 
+<Footer 
+        number="0895 234 069"
+        adress="40 Rue du Dr Roux, 75015 Paris"
+        logoInsta="https://www.instagram.com/supinfo/"
+        LogoX="https://www.youtube.com/watch?v=bbZ837Wjj1k&list=RDbbZ837Wjj1k&start_radio=1"
       />
     </>
   );
