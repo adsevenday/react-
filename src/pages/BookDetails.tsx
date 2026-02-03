@@ -21,7 +21,59 @@ function BookDetails() {
       try {
         const bookData = await OpenLibraryService.getBookDetails(id);
         setBook(bookData);
-        console.log("Détails du livre :", bookData);
+        // Données du work chargées
+
+        // 1) Si le work contient des références d'auteur, tenter de récupérer leur nom via /authors/{id}.json
+        if (bookData.authors && bookData.authors.length > 0) {
+          try {
+            const names = await Promise.all(bookData.authors.map(async (a: any) => {
+              if (!a) return null;
+              if (typeof a === 'string') return a;
+              if (a.name) return a.name;
+              const authorKey = a.author?.key || a.key || (a['author'] && a['author']['key']);
+              if (authorKey) {
+                try {
+                  const resp = await fetch(`https://openlibrary.org${authorKey}.json`);
+                  if (resp.ok) {
+                    const authorData = await resp.json();
+                    return authorData.name || null;
+                  }
+                } catch (e) {
+                  console.error('Erreur récupération author detail', e);
+                  return null;
+                }
+              }
+              return null;
+            }));
+
+            const filtered = names.filter((n: any) => n);
+            if (filtered.length > 0) {
+              bookData.authors = filtered.map((n: string) => ({ name: n }));
+              setBook({ ...bookData });
+            }
+          } catch (e) {
+            console.error('Erreur lors de la résolution des auteurs du work', e);
+          }
+        }
+
+        // 2) Fallback : si toujours pas d'auteurs, utiliser la recherche avancée (comme sur la Home)
+        if (!bookData.authors || bookData.authors.length === 0) {
+          try {
+            const searchData = await OpenLibraryService.advancedSearch({ title: bookData.title });
+            if (searchData.docs && searchData.docs.length > 0) {
+              for (let i = 0; i < searchData.docs.length; i++) {
+                const doc = searchData.docs[i];
+                if (doc.author_name && doc.author_name.length > 0) {
+                  bookData.authors = doc.author_name.map((name: string) => ({ name }));
+                  setBook({ ...bookData });
+                  break;
+                }
+              }
+            }
+          } catch (e) {
+            console.error('Erreur advancedSearch fallback', e);
+          }
+        }
 
         // Récupérer l'année de publication
         const year = await OpenLibraryService.getPublishYear(id);
@@ -89,7 +141,18 @@ function BookDetails() {
                 {book.authors && book.authors.length > 0 && (
                   <div className="bookMeta">
                     <p className="metaItem">
-                      <strong>Auteur(s) :</strong> {book.authors.map((a: any) => a.name).join(", ")}
+                      <strong>Auteur(s) :</strong> {book.authors.map((a: any) => {
+                        if (typeof a === 'string') return a;
+                        return a.name || 'Auteur inconnu';
+                      }).join(", ")}
+                    </p>
+                  </div>
+                )}
+
+                {(!book.authors || book.authors.length === 0) && (
+                  <div className="bookMeta">
+                    <p className="metaItem">
+                      <strong>Auteur(s) :</strong> Non disponible
                     </p>
                   </div>
                 )}

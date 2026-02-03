@@ -17,9 +17,34 @@ export const OpenLibraryService = {
 
   // Détails d'un livre 
   getBookDetails: async (workId) => {
-    const response = await fetch(`${BASE_URL}/works/${workId}.json`);
-    if (!response.ok) throw new Error("Livre introuvable");
-    return await response.json();
+    try {
+      const response = await fetch(`${BASE_URL}/works/${workId}.json`);
+      if (!response.ok) throw new Error("Livre introuvable");
+      const data = await response.json();
+      
+      // Récupérer les éditions pour avoir plus d'informations
+      try {
+        const editionsResponse = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=3`);
+        if (editionsResponse.ok) {
+          const editionsData = await editionsResponse.json();
+          if (editionsData.entries && editionsData.entries.length > 0) {
+            const firstEdition = editionsData.entries[0];
+            
+            // Récupérer d'autres infos utiles des éditions
+            if (!data.description && firstEdition.description) {
+              data.description = firstEdition.description;
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Erreur récupération éditions:", error);
+      }
+      
+      return data;
+    } catch (error) {
+      console.error("Erreur getBookDetails:", error);
+      throw error;
+    }
   },
 
   //  Recherche avancée 
