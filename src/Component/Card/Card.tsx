@@ -1,5 +1,6 @@
 import type { CardProps } from "./CardProps";
 import "./card.scss";
+
 const Card: React.FC<CardProps> = (props) => {
     return (
         <div className="card">
@@ -8,6 +9,8 @@ const Card: React.FC<CardProps> = (props) => {
             {props.author && <p>{props.author}</p>}
             {props.period && <p>{props.period}</p>}
             {props.department && <p>{props.department}</p>}
+            {}
+            {props.reference && <p className="reference-text">Réf : {props.reference}</p>}
         </div>
     );
 }

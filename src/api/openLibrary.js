@@ -76,6 +76,19 @@ export const OpenLibraryService = {
     try {
       const queryParts = [];
       
+      // GESTION DE LA RÉFÉRENCE (ex: OL82563W)
+      if (filters.reference) {
+        // 1. Nettoyage : on enlève "Réf :" et les espaces
+        const cleanRef = filters.reference.replace(/Réf\s*:\s*|Ref\s*:\s*/i, "").trim();
+        
+        // 2. Construction de la clé exacte
+        // Open Library identifie les livres via le format /works/ID
+        const workKey = cleanRef.startsWith('OL') ? `/works/${cleanRef}` : cleanRef;
+        
+        // 3. Utilisation de key:"..." avec des guillemets pour forcer l'exactitude
+        queryParts.push(`key:"${workKey}"`);
+      }
+
       if (filters.title) queryParts.push(`title:${filters.title}`);
       if (filters.author) queryParts.push(`author:${filters.author}`);
       if (filters.subject) queryParts.push(`subject:${filters.subject}`);
@@ -85,6 +98,7 @@ export const OpenLibraryService = {
 
       const searchQuery = queryParts.join(' ');
       
+      // Appel à l'API de recherche avec la requête filtrée
       const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(searchQuery)}&limit=15`);
       
       if (!response.ok) throw new Error("Erreur recherche avancée");

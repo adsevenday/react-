@@ -9,15 +9,32 @@ import './advancedSearch.scss';
 
 function AdvancedSearch() {
   const [searchParams] = useSearchParams();
-  // Ajout de first_publish_year dans le state
-  const [form, setForm] = useState({ title: '', author: '', subject: '', first_publish_year: '' });
+  
+  // État du formulaire incluant désormais le champ 'reference'
+  const [form, setForm] = useState({ 
+    title: '', 
+    author: '', 
+    subject: '', 
+    first_publish_year: '',
+    reference: '' 
+  });
+  
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const title = searchParams.get('title');
-    if (title) {
-      const newForm = { title, author: '', subject: '', first_publish_year: '' };
+    const reference = searchParams.get('reference');
+    
+    // Initialisation depuis l'URL (si on arrive d'une autre page avec des paramètres)
+    if (title || reference) {
+      const newForm = { 
+        title: title || '', 
+        author: '', 
+        subject: '', 
+        first_publish_year: '',
+        reference: reference || ''
+      };
       setForm(newForm);
       performSearch(newForm);
     }
@@ -26,7 +43,7 @@ function AdvancedSearch() {
   const performSearch = async (searchForm: typeof form) => {
     setLoading(true);
     try {
-      // On filtre les champs vides pour ne pas envoyer de paramètres inutiles
+      // Filtrage des champs vides pour l'envoi à l'API
       const activeFilters = Object.fromEntries(
         Object.entries(searchForm).filter(([_, v]) => v !== '')
       );
@@ -64,6 +81,14 @@ function AdvancedSearch() {
         <h1 className="title">Recherche Avancée</h1>
       
         <form onSubmit={handleSearch} className="searchForm">
+          {/* Nouveau champ pour la référence précise (ex: OL82563W) */}
+          <input 
+            placeholder="Référence (ex: OL82563W)" 
+            value={form.reference}
+            onChange={e => setForm({...form, reference: e.target.value})} 
+            className="searchInput"
+          />
+
           <input 
             placeholder="Titre" 
             value={form.title}
@@ -82,7 +107,6 @@ function AdvancedSearch() {
             onChange={e => setForm({...form, subject: e.target.value})} 
             className="searchInput"
           />
-          {/* NOUVEAU CHAMP : ANNÉE */}
           <input 
             placeholder="Année (ex: 1954)" 
             type="number"
@@ -97,7 +121,9 @@ function AdvancedSearch() {
 
         <div className="resultsGrid">
           {results.map((book, i) => {
-            const bookId = book.key.split('/').pop();
+            // Extraction de l'ID (ex: OL82563W) à partir de la propriété 'key' de l'API
+            const bookId = book.key ? book.key.split('/').pop() : '';
+            
             return (
               <Link to={`/book/${bookId}`} key={i} style={{ textDecoration: 'none' }}>
                 <Card
@@ -105,13 +131,14 @@ function AdvancedSearch() {
                   author={book.author_name ? book.author_name[0] : 'Auteur inconnu'}
                   bookCover={book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : undefined}
                   period={book.first_publish_year ? `${book.first_publish_year}` : undefined}
+                  reference={bookId} // Transmission de la référence exacte pour affichage sur la carte
                 />
               </Link>
             );
           })}
         </div>
 
-        {!loading && results.length === 0 && (form.title || form.author || form.first_publish_year) && (
+        {!loading && results.length === 0 && (form.title || form.author || form.first_publish_year || form.reference) && (
           <p className="noResults">Aucun livre trouvé pour cette recherche.</p>
         )}
       </div>

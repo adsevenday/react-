@@ -4,5 +4,6 @@ export interface CardProps {
     bookCover?: string;
     department?: string;
     period?: string;
-    author?:string;
+    author?: string;
+    reference?: string; 
 }
