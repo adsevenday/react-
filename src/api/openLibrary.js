@@ -1,22 +1,15 @@
-// Utilisation du proxy Vite
 const BASE_URL = "/api-openlibrary"; 
 
 export const OpenLibraryService = {
-  /**
-   * Récupère les livres récents
-   */
   getLatestBooks: async (limit = 12) => {
     try {
       const currentYear = new Date().getFullYear();
       const lastYear = currentYear - 1;
-      
-      // On cherche les livres publiés entre l'année dernière et cette année
       const query = `first_publish_year:[${lastYear} TO ${currentYear}]`;
       
       const response = await fetch(`${BASE_URL}/search.json?q=${query}&sort=new&limit=${limit}`);
       
       if (!response.ok) {
-        // Si la recherche par année échoue, on tente une recherche générique simple
         const fallbackResponse = await fetch(`${BASE_URL}/search.json?q=the&sort=new&limit=${limit}`);
         if (!fallbackResponse.ok) throw new Error("Erreur lors de la récupération des nouveautés");
         return await fallbackResponse.json();
@@ -29,7 +22,6 @@ export const OpenLibraryService = {
     }
   },
 
-  // Recherche rapide 
   searchBooks: async (query) => {
     try {
       const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(query)}&limit=10`);
@@ -41,7 +33,6 @@ export const OpenLibraryService = {
     }
   },
 
-  // Récupération des livres par sujet
   getBooksBySubject: async (subject = 'love') => {
     try {
       const response = await fetch(`${BASE_URL}/subjects/${encodeURIComponent(subject)}.json?limit=12`);
@@ -53,7 +44,6 @@ export const OpenLibraryService = {
     }
   },
 
-  // Détails d'un livre
   getBookDetails: async (workId) => {
     try {
       const response = await fetch(`${BASE_URL}/works/${workId}.json`);
@@ -82,11 +72,21 @@ export const OpenLibraryService = {
     }
   },
 
-  // Recherche avancée
   advancedSearch: async (filters) => {
     try {
-      const params = new URLSearchParams(filters).toString();
-      const response = await fetch(`${BASE_URL}/search.json?${params}&limit=15`);
+      const queryParts = [];
+      
+      if (filters.title) queryParts.push(`title:${filters.title}`);
+      if (filters.author) queryParts.push(`author:${filters.author}`);
+      if (filters.subject) queryParts.push(`subject:${filters.subject}`);
+      if (filters.first_publish_year) queryParts.push(`first_publish_year:${filters.first_publish_year}`);
+
+      if (queryParts.length === 0) return { docs: [] };
+
+      const searchQuery = queryParts.join(' ');
+      
+      const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(searchQuery)}&limit=15`);
+      
       if (!response.ok) throw new Error("Erreur recherche avancée");
       return await response.json();
     } catch (error) {
@@ -95,7 +95,6 @@ export const OpenLibraryService = {
     }
   },
 
-  // Wikipedia
   getWikipediaSummary: async (title) => {
     try {
       const formattedTitle = encodeURIComponent(title.replace(/ /g, '_'));
@@ -108,7 +107,6 @@ export const OpenLibraryService = {
     }
   },
 
-  // Année de publication
   getPublishYear: async (workId) => {
     try {
       const response = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=1`);
@@ -124,5 +122,3 @@ export const OpenLibraryService = {
     }
   },
 };
-
-export default OpenLibraryService;
