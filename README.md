@@ -1,73 +1,65 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Ce projet est une application web moderne construite avec React, TypeScript et Vite. Elle permet aux utilisateurs de parcourir, rechercher et consulter les détails des livres en utilisant l'API d'Open Library.
 
-Currently, two official plugins are available:
+🚀 Fonctionnalités
+Accueil Dynamique : Affiche les dernières nouveautés littéraires basées sur l'année en cours.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Recherche Avancée : Permet de filtrer les résultats par :
 
-## React Compiler
+Titre
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+Auteur
 
-## Expanding the ESLint configuration
+Sujet (ex: Fantasy, Histoire)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Année de publication
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Référence exacte (ex: OL35183701W) via une recherche par clé précise.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Détails du Livre : Affiche les descriptions complètes, les couvertures et intègre des résumés provenant de Wikipedia pour enrichir le contexte.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Navigation Intuitive : Utilise react-router-dom pour une navigation fluide entre la recherche, les résultats et les fiches détaillées.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+🛠️ Stack Technique
+Frontend : React 18, TypeScript.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Style : SASS (SCSS) avec un système de jetons (tokens) pour les couleurs et le design.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Outil de build : Vite.
+
+Routage : React Router.
+
+API : Open Library API & Wikipedia API.
+
+📁 Structure du Projet
+Plaintext
+src/
+├── api/
+│   └── openLibrary.js     # Service de gestion des appels API
+├── Component/             # Composants réutilisables
+│   ├── Card/              # Cartes d'affichage des livres
+│   ├── NavHeader/         # Barre de navigation avec recherche
+│   └── WikiCard/          # Intégration des données Wikipedia
+├── pages/                 # Vues principales
+│   ├── Home.tsx           # Page d'accueil
+│   ├── AdvancedSearch.tsx # Moteur de recherche filtré
+│   └── BookDetails.tsx    # Fiche détaillée d'un ouvrage
+├── styles/
+│   └── token.scss         # Variables de thèmes et couleurs
+└── App.tsx                # Configuration des routes
+⚙️ Installation et Démarrage
+Cloner le dépôt :
+
+Bash
+git clone [url-du-repo]
+cd react--main
+Installer les dépendances :
+
+Bash
+npm install
+Lancer le serveur de développement :
+
+Bash
+npm run dev
+Configuration du Proxy : Le projet utilise un proxy configuré dans vite.config.ts pour rediriger les requêtes /api-openlibrary vers https://openlibrary.org afin d'éviter les problèmes de CORS en développement.
