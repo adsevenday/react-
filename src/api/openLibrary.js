@@ -1,6 +1,7 @@
 const BASE_URL = "/api-openlibrary"; 
 
 export const OpenLibraryService = {
+  // Récupère les livres parus cette année et l'année précédente
   getLatestBooks: async (limit = 12) => {
     try {
       const currentYear = new Date().getFullYear();
@@ -22,6 +23,7 @@ export const OpenLibraryService = {
     }
   },
 
+  // RECHERCHE SIMPLE : Pour la barre de recherche globale
   searchBooks: async (query) => {
     try {
       const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(query)}&limit=10`);
@@ -33,6 +35,7 @@ export const OpenLibraryService = {
     }
   },
 
+  // SUJETS : Filtrage par thématique (ex: Fantasy, Love)
   getBooksBySubject: async (subject = 'love') => {
     try {
       const response = await fetch(`${BASE_URL}/subjects/${encodeURIComponent(subject)}.json?limit=12`);
@@ -44,11 +47,13 @@ export const OpenLibraryService = {
     }
   },
 
+  //  DÉTAILS : Page spécifique d'un livre (Item page)
   getBookDetails: async (workId) => {
     try {
       const response = await fetch(`${BASE_URL}/works/${workId}.json`);
       if (!response.ok) throw new Error("Livre introuvable");
       const data = await response.json();
+      
       
       try {
         const editionsResponse = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=3`);
@@ -72,20 +77,17 @@ export const OpenLibraryService = {
     }
   },
 
+  // RECHERCHE AVANCÉE : Multi-critères et identification par référence exacte
   advancedSearch: async (filters) => {
     try {
       const queryParts = [];
       
-      // GESTION DE LA RÉFÉRENCE (ex: OL82563W)
       if (filters.reference) {
-        // 1. Nettoyage : on enlève "Réf :" et les espaces
+        
         const cleanRef = filters.reference.replace(/Réf\s*:\s*|Ref\s*:\s*/i, "").trim();
         
-        // 2. Construction de la clé exacte
-        // Open Library identifie les livres via le format /works/ID
+      
         const workKey = cleanRef.startsWith('OL') ? `/works/${cleanRef}` : cleanRef;
-        
-        // 3. Utilisation de key:"..." avec des guillemets pour forcer l'exactitude
         queryParts.push(`key:"${workKey}"`);
       }
 
@@ -97,8 +99,6 @@ export const OpenLibraryService = {
       if (queryParts.length === 0) return { docs: [] };
 
       const searchQuery = queryParts.join(' ');
-      
-      // Appel à l'API de recherche avec la requête filtrée
       const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(searchQuery)}&limit=15`);
       
       if (!response.ok) throw new Error("Erreur recherche avancée");
@@ -109,6 +109,7 @@ export const OpenLibraryService = {
     }
   },
 
+  //  WIKIPEDIA : Récupération du résumé et lien externe
   getWikipediaSummary: async (title) => {
     try {
       const formattedTitle = encodeURIComponent(title.replace(/ /g, '_'));
@@ -121,6 +122,7 @@ export const OpenLibraryService = {
     }
   },
 
+  // Récupère l'année de publication précise via les éditions
   getPublishYear: async (workId) => {
     try {
       const response = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=1`);
@@ -133,6 +135,18 @@ export const OpenLibraryService = {
     } catch (error) {
       console.error("Erreur récupération année:", error);
       return null;
+    }
+  },
+
+  // RECENT CHANGES : Activité réelle du site (Requis pour la page d'accueil)
+  getRecentChanges: async (limit = 20) => {
+    try {
+      const response = await fetch(`${BASE_URL}/recentchanges.json?limit=${limit}`);
+      if (!response.ok) throw new Error("Erreur RecentChanges");
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur getRecentChanges:", error);
+      return [];
     }
   },
 };

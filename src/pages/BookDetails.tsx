@@ -21,9 +21,7 @@ function BookDetails() {
       try {
         const bookData = await OpenLibraryService.getBookDetails(id);
         setBook(bookData);
-        // Données du work chargées
 
-        // 1) Si le work contient des références d'auteur, tenter de récupérer leur nom via /authors/{id}.json
         if (bookData.authors && bookData.authors.length > 0) {
           try {
             const names = await Promise.all(bookData.authors.map(async (a: any) => {
@@ -56,7 +54,6 @@ function BookDetails() {
           }
         }
 
-        // 2) Fallback : si toujours pas d'auteurs, utiliser la recherche avancée (comme sur la Home)
         if (!bookData.authors || bookData.authors.length === 0) {
           try {
             const searchData = await OpenLibraryService.advancedSearch({ title: bookData.title });
@@ -75,7 +72,6 @@ function BookDetails() {
           }
         }
 
-        // Récupérer l'année de publication
         const year = await OpenLibraryService.getPublishYear(id);
         setPublishYear(year);
 
@@ -116,8 +112,6 @@ function BookDetails() {
             <Link to="/" className="backLink">← Retour à la librairie</Link>
             
             <div className="bookDetailsContent">
-              
-              {/* Colonne Couverture */}
               <div className="bookCoverColumn">
                 {book.covers ? (
                   <img 
@@ -130,7 +124,6 @@ function BookDetails() {
                 )}
               </div>
 
-              {/* Colonne Informations */}
               <div className="bookInfoColumn">
                 <h1 className="bookTitle">{book.title}</h1>
                 
@@ -172,7 +165,6 @@ function BookDetails() {
                     : (book.description?.value || "Pas de description disponible.")}
                 </p>
 
-                {/* Section Wikipedia avec WikiCard */}
                 {wikiData && (
                   <div className="wikiSection">
                     <WikiCard 
@@ -188,7 +180,7 @@ function BookDetails() {
         )}
       </div>
 
-<Footer 
+      <Footer 
         number="0895 234 069"
         adress="40 Rue du Dr Roux, 75015 Paris"
         logoInsta="https://www.instagram.com/supinfo/"

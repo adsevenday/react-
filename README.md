@@ -32,7 +32,7 @@ Routage : React Router.
 
 API : Open Library API & Wikipedia API.
 
-📁 Structure du Projet
+Structure du Projet
 Plaintext
 src/
 ├── api/
@@ -49,17 +49,8 @@ src/
 │   └── token.scss         # Variables de thèmes et couleurs
 └── App.tsx                # Configuration des routes
 ⚙️ Installation et Démarrage
-Cloner le dépôt :
 
-Bash
-git clone [url-du-repo]
-cd react--main
-Installer les dépendances :
-
-Bash
 npm install
-Lancer le serveur de développement :
+npm run dev #Lancer le serveur 
 
-Bash
-npm run dev
-Configuration du Proxy : Le projet utilise un proxy configuré dans vite.config.ts pour rediriger les requêtes /api-openlibrary vers https://openlibrary.org afin d'éviter les problèmes de CORS en développement.
+
