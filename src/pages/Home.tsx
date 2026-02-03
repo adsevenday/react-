@@ -16,11 +16,16 @@ function Home() {
 
   useEffect(() => {
     const fetchHomeData = async () => {
+      setLoading(true);
       try {
-        const data = await OpenLibraryService.getBooksBySubject('love');
-        setTrendingBooks(data.works || []);
+        // Appelle la nouvelle méthode pour récupérer les derniers livres parus
+        const data = await OpenLibraryService.getLatestBooks(40);
+        // L'API de recherche utilise 'docs' pour les résultats
+        setTrendingBooks(data.docs || []);
       } catch (error) {
         console.error("Erreur lors du chargement des nouveautés :", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchHomeData();
@@ -42,15 +47,15 @@ function Home() {
     }
   };
 
-
   const handleNavSearch = async (query: string) => {
     const newForm = { title: query, author: '', subject: '' };
     setSearchForm(newForm);
     if (query.trim()) {
       await performSearch(newForm);
+    } else {
+      setHasSearched(false);
     }
   };
-
 
   return (
     <>
@@ -64,8 +69,6 @@ function Home() {
       />
 
       <div className="homeContainer">
-
-        {/* Section des résultats ou nouveaux arrivants */}
         <section className="section">
           <div className="sectionHeader">
             <div className="headerBar"></div>
@@ -74,22 +77,27 @@ function Home() {
             </h2>
           </div>
 
-          <div className="booksGrid">
-            {(hasSearched ? searchResults : trendingBooks).map((book, index) => {
-              const bookId = book.key.split('/').pop();
-              return (
-                <Link to={`/book/${bookId}`} key={index} style={{ textDecoration: 'none' }}>
-                  <Card
-                    name={book.title}
-                    author={book.author_name ? book.author_name[0] : 'Auteur inconnu'}
-                    bookCover={book.cover_id ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg` : 
-                              book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : undefined}
-                    period={book.first_publish_year ? `${book.first_publish_year}` : undefined}
-                  />
-                </Link>
-              );
-            })}
-          </div>
+          {loading ? (
+            <div className="loadingContainer">Chargement des livres...</div>
+          ) : (
+            <div className="booksGrid">
+              {(hasSearched ? searchResults : trendingBooks).map((book, index) => {
+                // Extraction de l'ID depuis la clé (ex: "/works/OL123W" -> "OL123W")
+                const bookId = book.key ? book.key.split('/').pop() : index;
+                return (
+                  <Link to={`/book/${bookId}`} key={index} style={{ textDecoration: 'none' }}>
+                    <Card
+                      name={book.title}
+                      author={book.author_name ? book.author_name[0] : 'Auteur inconnu'}
+                      bookCover={book.cover_id ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg` : 
+                                book.cover_i ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` : undefined}
+                      period={book.first_publish_year ? `${book.first_publish_year}` : undefined}
+                    />
+                  </Link>
+                );
+              })}
+            </div>
+          )}
 
           {hasSearched && !loading && searchResults.length === 0 && (
             <p className="noResults">Aucun livre trouvé pour cette recherche.</p>

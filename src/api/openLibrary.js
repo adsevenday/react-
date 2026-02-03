@@ -1,7 +1,34 @@
-// On utilise le préfixe du proxy défini dans vite.config.ts pour éviter les erreurs CORS
+// Utilisation du proxy Vite
 const BASE_URL = "/api-openlibrary"; 
 
 export const OpenLibraryService = {
+  /**
+   * Récupère les livres récents
+   */
+  getLatestBooks: async (limit = 12) => {
+    try {
+      const currentYear = new Date().getFullYear();
+      const lastYear = currentYear - 1;
+      
+      // On cherche les livres publiés entre l'année dernière et cette année
+      const query = `first_publish_year:[${lastYear} TO ${currentYear}]`;
+      
+      const response = await fetch(`${BASE_URL}/search.json?q=${query}&sort=new&limit=${limit}`);
+      
+      if (!response.ok) {
+        // Si la recherche par année échoue, on tente une recherche générique simple
+        const fallbackResponse = await fetch(`${BASE_URL}/search.json?q=the&sort=new&limit=${limit}`);
+        if (!fallbackResponse.ok) throw new Error("Erreur lors de la récupération des nouveautés");
+        return await fallbackResponse.json();
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur getLatestBooks:", error);
+      throw error;
+    }
+  },
+
   // Recherche rapide 
   searchBooks: async (query) => {
     try {
@@ -26,22 +53,19 @@ export const OpenLibraryService = {
     }
   },
 
-  // Détails d'un livre 
+  // Détails d'un livre
   getBookDetails: async (workId) => {
     try {
       const response = await fetch(`${BASE_URL}/works/${workId}.json`);
       if (!response.ok) throw new Error("Livre introuvable");
       const data = await response.json();
       
-      // Récupérer les éditions pour avoir plus d'informations
       try {
         const editionsResponse = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=3`);
         if (editionsResponse.ok) {
           const editionsData = await editionsResponse.json();
           if (editionsData.entries && editionsData.entries.length > 0) {
             const firstEdition = editionsData.entries[0];
-            
-            // Récupérer d'autres infos utiles des éditions
             if (!data.description && firstEdition.description) {
               data.description = firstEdition.description;
             }
@@ -58,7 +82,7 @@ export const OpenLibraryService = {
     }
   },
 
-  // Recherche avancée 
+  // Recherche avancée
   advancedSearch: async (filters) => {
     try {
       const params = new URLSearchParams(filters).toString();
@@ -71,7 +95,7 @@ export const OpenLibraryService = {
     }
   },
 
-  // Récupération du résumé Wikipedia (URL directe car souvent autorisée ou gérée différemment)
+  // Wikipedia
   getWikipediaSummary: async (title) => {
     try {
       const formattedTitle = encodeURIComponent(title.replace(/ /g, '_'));
@@ -84,7 +108,7 @@ export const OpenLibraryService = {
     }
   },
 
-  // Récupération de l'année de publication via les éditions
+  // Année de publication
   getPublishYear: async (workId) => {
     try {
       const response = await fetch(`${BASE_URL}/works/${workId}/editions.json?limit=1`);
