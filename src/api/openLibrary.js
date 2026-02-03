@@ -23,9 +23,16 @@ export const OpenLibraryService = {
   },
 
   //  Recherche avancée 
+  // `filters` peut être un objet (ex: { title: 'x' }) ou une chaîne de requête brute (ex: 'q=first_publish_year:1999')
   advancedSearch: async (filters) => {
-    const params = new URLSearchParams(filters).toString();
-    const response = await fetch(`${BASE_URL}/search.json?${params}&limit=15`);
+    let queryString = '';
+    if (typeof filters === 'string') {
+      queryString = filters;
+    } else {
+      queryString = new URLSearchParams(filters).toString();
+    }
+    const sep = queryString ? `?${queryString}&limit=15` : `?limit=15`;
+    const response = await fetch(`${BASE_URL}/search.json${sep}`);
     if (!response.ok) throw new Error("Erreur recherche avancée");
     return await response.json();
   },

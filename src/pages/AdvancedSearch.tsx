@@ -10,15 +10,15 @@ import './advancedSearch.scss';
 
 function AdvancedSearch() {
   const [searchParams] = useSearchParams();
-  const [form, setForm] = useState({ title: '', author: '', subject: '' });
+  const [form, setForm] = useState({ title: '', author: '', subject: '', year: '' });
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const title = searchParams.get('title');
     if (title) {
-      setForm({ title, author: '', subject: '' });
-      performSearch({ title, author: '', subject: '' });
+      setForm({ title, author: '', subject: '', year: '' });
+      performSearch({ title, author: '', subject: '', year: '' });
     }
   }, [searchParams]);
 
@@ -26,9 +26,31 @@ function AdvancedSearch() {
     setLoading(true);
     try {
       const activeFilters = Object.fromEntries(
-        Object.entries(searchForm).filter(([_, v]) => v !== '')
+        Object.entries(searchForm)
+          .filter(([_, v]) => v !== '')
+          // map our local `year` key to the OpenLibrary `first_publish_year` param
+          .map(([k, v]) => (k === 'year' ? ['first_publish_year', v] : [k, v]))
       );
-      const data = await OpenLibraryService.advancedSearch(activeFilters);
+
+      // Si aucun filtre actif, ne pas appeler l'API
+      const keys = Object.keys(activeFilters);
+      if (keys.length === 0) {
+        setResults([]);
+        return;
+      }
+
+      // Construire une requête `q` combinant tous les champs pour forcer un AND logique
+      const qParts = Object.entries(activeFilters).map(([k, v]) => {
+        const val = String(v).replace(/"/g, '\\"');
+        if (k === 'title' || k === 'author' || k === 'subject') {
+          return `${k}:"${val}"`;
+        }
+        // first_publish_year et autres champs numériques
+        return `${k}:${val}`;
+      });
+
+      const qString = qParts.join(' ');
+      const data = await OpenLibraryService.advancedSearch(`q=${encodeURIComponent(qString)}`);
       setResults(data.docs || []);
     } catch (error) {
       console.error("Erreur recherche avancée:", error);
@@ -84,6 +106,12 @@ function AdvancedSearch() {
           onChange={e => setForm({...form, subject: e.target.value})} 
           className="searchInput"
         />
+        <input
+          placeholder="Année (ex: 1999)"
+          value={form.year}
+          onChange={e => setForm({...form, year: e.target.value})}
+          className="searchInput"
+        />
         <button 
           type="submit" 
           disabled={loading}
@@ -112,7 +140,7 @@ function AdvancedSearch() {
         })}
       </div>
 
-        {!loading && results.length === 0 && form.title && (
+        {!loading && results.length === 0 && (form.title || form.author || form.subject || form.year) && (
           <p className="noResults">Aucun livre trouvé pour cette recherche.</p>
         )}
       </div>
