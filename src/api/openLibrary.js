@@ -1,18 +1,29 @@
-const BASE_URL = "https://openlibrary.org";
+// On utilise le préfixe du proxy défini dans vite.config.ts pour éviter les erreurs CORS
+const BASE_URL = "/api-openlibrary"; 
 
 export const OpenLibraryService = {
-  //  Recherche rapide 
+  // Recherche rapide 
   searchBooks: async (query) => {
-    const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(query)}&limit=10`);
-    if (!response.ok) throw new Error("Erreur réseau");
-    return await response.json();
+    try {
+      const response = await fetch(`${BASE_URL}/search.json?q=${encodeURIComponent(query)}&limit=10`);
+      if (!response.ok) throw new Error("Erreur réseau");
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur searchBooks:", error);
+      throw error;
+    }
   },
 
-  // récupération des livres 
+  // Récupération des livres par sujet
   getBooksBySubject: async (subject = 'love') => {
-    const response = await fetch(`${BASE_URL}/subjects/${encodeURIComponent(subject)}.json?limit=12`);
-    if (!response.ok) throw new Error("Erreur lors de la récupération des livres par sujet");
-    return await response.json();
+    try {
+      const response = await fetch(`${BASE_URL}/subjects/${encodeURIComponent(subject)}.json?limit=12`);
+      if (!response.ok) throw new Error("Erreur lors de la récupération des livres par sujet");
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur getBooksBySubject:", error);
+      throw error;
+    }
   },
 
   // Détails d'un livre 
@@ -47,21 +58,30 @@ export const OpenLibraryService = {
     }
   },
 
-  //  Recherche avancée 
+  // Recherche avancée 
   advancedSearch: async (filters) => {
-    const params = new URLSearchParams(filters).toString();
-    const response = await fetch(`${BASE_URL}/search.json?${params}&limit=15`);
-    if (!response.ok) throw new Error("Erreur recherche avancée");
-    return await response.json();
+    try {
+      const params = new URLSearchParams(filters).toString();
+      const response = await fetch(`${BASE_URL}/search.json?${params}&limit=15`);
+      if (!response.ok) throw new Error("Erreur recherche avancée");
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur advancedSearch:", error);
+      throw error;
+    }
   },
 
-  // recupération de Wikipedia 
+  // Récupération du résumé Wikipedia (URL directe car souvent autorisée ou gérée différemment)
   getWikipediaSummary: async (title) => {
-    
-    const formattedTitle = encodeURIComponent(title.replace(/ /g, '_'));
-    const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${formattedTitle}`);
-    if (!response.ok) return null; 
-    return await response.json();
+    try {
+      const formattedTitle = encodeURIComponent(title.replace(/ /g, '_'));
+      const response = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${formattedTitle}`);
+      if (!response.ok) return null; 
+      return await response.json();
+    } catch (error) {
+      console.error("Erreur getWikipediaSummary:", error);
+      return null;
+    }
   },
 
   // Récupération de l'année de publication via les éditions
@@ -80,3 +100,5 @@ export const OpenLibraryService = {
     }
   },
 };
+
+export default OpenLibraryService;
